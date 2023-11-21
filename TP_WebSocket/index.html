@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>websocket</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+
+    <main>
+        <form action="websocket" method="post" id="form">
+
+            <label for="message">Message :</label>
+            <input type="text" name="message" id="message">
+
+            <label for="colorPicker">Choisir une couleur :</label>
+            <input type="color" id="colorPicker" name="colorPicker">
+
+            
+        
+            <button type="submit">SUBMIT</button>
+        </form>
+        
+        
+        <div id="divsocket">
+            
+        </div>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+
+  const message = document.getElementById('message');
+  const form = document.getElementById('form');
+
+  const colorPicker = document.getElementById('colorPicker');
+
+  var pseudo = prompt('Quel est votre pseudo ?');
+
+    socket.emit('pseudo', pseudo);
+
+
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (message.value) {
+      socket.emit('chat message', message.value);
+      
+        message.value = '';
+        
+    }
+  });
+
+  colorPicker.addEventListener('change', (e) => {
+    socket.emit('color', colorPicker.value);
+  });
+  
+
+
+  socket.on('chat message', (msg, color) => {
+    const divsocket = document.getElementById('divsocket');
+    const item = document.createElement('div');
+    const p = document.createElement('p');
+    item.classList.add('message');
+    p.textContent = msg;
+    item.appendChild(p);
+    item.style.backgroundColor = color;
+    divsocket.appendChild(item);
+    divsocket.scrollTo(0, divsocket.scrollHeight);
+  });
+</script>
+    
+</body>
+</html>
